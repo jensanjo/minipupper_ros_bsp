@@ -1,0 +1,16 @@
+# network configuration
+# fill in <ESSID> and <PSK>
+# 
+network:
+    ethernets:
+        eth0:
+            dhcp4: true
+            optional: true
+    version: 2
+    wifis:
+        wlan0:
+            access-points:
+                "<ESSID>":
+                    password: "<PSK>"
+            dhcp4: true
+
