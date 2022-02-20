@@ -8,11 +8,11 @@ import os
 from PIL import Image
 from PIL import ImageDraw
 
-sys.path.append("/home/ubuntu/minipupper_ros_bsp")
-sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("/home/ubuntu/minipupper_ros_bsp") for name in dirs])
-import mangdang.Adafruit_GPIO as GPIO
-import mangdang.Adafruit_GPIO.SPI as SPI
-from mangdang.LCD.gif import AnimatedGif
+sys.path.append("/home/ubuntu/Robotics/QuadrupedRobot")
+sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("/home/ubuntu/Robotics/QuadrupedRobot") for name in dirs])
+import Mangdang.Adafruit_GPIO as GPIO
+import Mangdang.Adafruit_GPIO.SPI as SPI
+from Mangdang.LCD.gif import AnimatedGif
 
 SPI_CLOCK_HZ = 31200000 # 31.2 MHz
 
@@ -149,6 +149,7 @@ class ST7789(object):
         """
         RST = 27  # Set GPIO pin# 15 (BCM 14) as reset control
         DC = 24  # Set GPIO pin# 11 (BCM 15) as DATA/command (NOT MOSI!)
+        LED = 26  # Set GPIO pin# 13 (BCM 27) as backlight control
         SPI_PORT = 0
         SPI_DEVICE = 0
         SPI_MODE = 0b11
@@ -156,9 +157,19 @@ class ST7789(object):
         self._spi = SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=SPI_SPEED_HZ)
         self._rst = RST
         self._dc = DC
+        self._led = LED
         self._gpio = None
         self.width = ST7789_TFTWIDTH
         self.height = ST7789_TFTHEIGHT
+        if self._gpio is None:
+            self._gpio = GPIO.get_platform_gpio()
+        # Set DC as output.
+        self._gpio.setup(self._dc, GPIO.OUT)
+        # Setup reset as output (if provided).
+        if self._rst is not None:
+            self._gpio.setup(self._rst, GPIO.OUT)
+        # Turn on the backlight LED
+        self._gpio.setup(self._led, GPIO.OUT)
 
         # Set SPI to mode 0, MSB first.
         self._spi.set_mode(SPI_MODE)
@@ -174,13 +185,7 @@ class ST7789(object):
         single SPI transaction, with a default of 4096.
         """
         # Set DC low for command, high for data.
-        if is_data == True:
-            with open('/sys/class/gpio/gpio24/value', 'w') as f :
-                f.write("1")
-        else:
-            with open('/sys/class/gpio/gpio24/value', 'w') as f :
-                f.write("0")
-
+        self._gpio.output(self._dc, is_data)
         # Convert scalar argument to list so either can be passed as parameter.
         if isinstance(data, numbers.Number):
             data = [data & 0xFF]
@@ -199,17 +204,13 @@ class ST7789(object):
 
     def reset(self):
         """Reset the display, if reset pin is connected."""
-        with open('/sys/class/gpio/gpio27/value', 'w') as f :
-                f.write("1")
-        time.sleep(0.100)
-        with open('/sys/class/gpio/gpio27/value', 'w') as f :
-            f.write("0")
-        time.sleep(0.100)
-
-        with open('/sys/class/gpio/gpio27/value', 'w') as f :
-            f.write("1")
-        time.sleep(0.100)
-        f.close()
+        if self._rst is not None:
+            self._gpio.set_high(self._rst)
+            time.sleep(0.100)
+            self._gpio.set_low(self._rst)
+            time.sleep(0.100)
+            self._gpio.set_high(self._rst)
+            time.sleep(0.100)
 
     def _init(self):
         # Initialize the display.  Broken out as a separate function so it can
@@ -259,6 +260,15 @@ class ST7789(object):
         self.command(0xC6)
         self.data(0x1F)   ## 0x0F:60Hz
 
+        # self.command(0xCA)
+        # self.data(0x0F)
+        #
+        # self.command(0xC8)
+        # self.data(0x08)
+        #
+        # self.command(0x55)
+        # self.data(0x90)
+
         self.command(0xD0)
         self.data(0xA4)
         self.data(0xA1)
@@ -300,6 +310,8 @@ class ST7789(object):
         self.command(0x21)
         self.command(0x29)
         time.sleep(0.100) # 100 ms
+        self._gpio.set_high(self._led)
+
     def begin(self):
         """Initialize the display.  Should be called once before other calls that
         interact with the display are called.
