@@ -1,0 +1,4 @@
+SUBSYSTEM=="gpio*", PROGRAM="/bin/sh -c '\
+chown -R root:gpio /sys/class/gpio && chmod -R g=u /sys/class/gpio; \
+chown -R root:gpio /sys$devpath && chmod -R g=u /sys$devpath; \
+chown    root:gpio /dev/gpiomem && chmod g=u /dev/gpiomem'"

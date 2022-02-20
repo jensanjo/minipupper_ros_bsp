@@ -1,0 +1,3 @@
+SUBSYSTEM=="nvmem", PROGRAM="/bin/sh -c '\
+chown  root:i2c /sys/bus/nvmem/devices/3-00500/nvmem && \
+chmod 770 /sys/bus/nvmem/devices/3-00500/nvmem'"

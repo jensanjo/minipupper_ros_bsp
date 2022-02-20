@@ -11,5 +11,10 @@ dtoverlay=i2c-pwm-pca9685a
 dtoverlay=gpio-fan
 dtparam=audio=on
 dtoverlay=audremap,pins_18_19
+dtoverlay=act-led,activelow=on
+dtparam=pwr_led_trigger=none
+dtparam=pwr_led_activelow=off
 
-include nobtcfg.txt
+disable_splash=1
+boot_delay=0
+# dtoverlay=disable-bt

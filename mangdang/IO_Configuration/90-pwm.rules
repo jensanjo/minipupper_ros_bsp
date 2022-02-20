@@ -1,0 +1,3 @@
+SUBSYSTEM=="pwm*", PROGRAM="/bin/sh -c '\
+chown -R -H root:i2c /sys/class/pwm/pwmchip0 && \
+chmod -R g=u /sys/class/pwm/pwmchip0'"
