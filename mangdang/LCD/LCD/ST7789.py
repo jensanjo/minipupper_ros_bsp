@@ -8,11 +8,11 @@ import os
 from PIL import Image
 from PIL import ImageDraw
 
-sys.path.append("/home/ubuntu/Robotics/QuadrupedRobot")
-sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("/home/ubuntu/Robotics/QuadrupedRobot") for name in dirs])
-import Mangdang.Adafruit_GPIO as GPIO
-import Mangdang.Adafruit_GPIO.SPI as SPI
-from Mangdang.LCD.gif import AnimatedGif
+# sys.path.append("/home/ubuntu/Robotics/QuadrupedRobot")
+# sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("/home/ubuntu/Robotics/QuadrupedRobot") for name in dirs])
+import Adafruit_GPIO.GPIO as GPIO
+import Adafruit_GPIO.SPI as SPI
+from LCD.gif import AnimatedGif
 
 SPI_CLOCK_HZ = 31200000 # 31.2 MHz
 

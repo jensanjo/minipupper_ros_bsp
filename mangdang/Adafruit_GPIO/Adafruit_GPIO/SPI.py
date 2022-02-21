@@ -22,7 +22,7 @@
 import operator
 import time
 
-import mangdang.Adafruit_GPIO as GPIO
+import Adafruit_GPIO as GPIO
 
 
 MSBFIRST = 0
