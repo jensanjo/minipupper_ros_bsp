@@ -13,3 +13,4 @@ do
 	echo  4000000 > /sys/class/pwm/pwmchip0/pwm$i/period
 	# chmod  777  /sys/class/pwm/pwmchip0/pwm$i/duty_cycle
 done
+mpg123 -q /home/ubuntu/Music/power_on.mp3 &
