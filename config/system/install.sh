@@ -54,7 +54,10 @@ sudo apt install -y \
 	ros-noetic-urdf \
 	ros-noetic-ecl-threads \
 	ros-noetic-robot-state-publisher \
-	ros-noetic-robot-localization 
+	ros-noetic-robot-localization \
+	ros-noetic-cv-bridge \
+	ros-noetic-joy \
+	python3-rosdep 
 
 ## extra dependencies for build (ldlidar):
 sudo apt install libudev-dev
