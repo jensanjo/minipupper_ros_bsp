@@ -4,7 +4,7 @@ Description=max17205 battery monitor service
 [Service]
 Type=simple
 ExecStart=/usr/bin/battery_monitor
-User=ubuntu
+User=root
 
 [Install]
 WantedBy=sysinit.target
